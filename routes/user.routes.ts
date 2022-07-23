@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { User } from "../models/user.model";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import Token from "../classes/token";
 import { Authentication } from "../middlewares/auth";
 
@@ -102,6 +102,7 @@ userRoutes.put('/update',[Authentication],(req:any,res:Response)=>{
         })
     })
 });
+
 
 userRoutes.get('/checkadmin',[Authentication],async (req:Request,res:Response)=>{
     const token = req.get('x-token') || '';

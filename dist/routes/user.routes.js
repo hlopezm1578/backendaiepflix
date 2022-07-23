@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const user_model_1 = require("../models/user.model");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const token_1 = __importDefault(require("../classes/token"));
 const auth_1 = require("../middlewares/auth");
 const userRoutes = (0, express_1.Router)();
@@ -22,7 +22,7 @@ userRoutes.post('/', (req, res) => {
     const user = {
         name: req.body.name,
         email: req.body.email,
-        password: bcrypt_1.default.hashSync(req.body.password, 10)
+        password: bcryptjs_1.default.hashSync(req.body.password, 10)
     };
     user_model_1.User.create(user)
         .then((userDb) => {
