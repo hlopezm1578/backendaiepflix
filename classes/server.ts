@@ -8,7 +8,11 @@ export default class Server{
         this.app=express();
     }
 
+    // Start(callback:Function){
+    //     this.app.listen(this.port,callback())
+    // }
+
     Start(callback:Function){
-        this.app.listen(this.port,callback())
+        this.app.listen(process.env.PORT || 5000,callback())
     }
 }
