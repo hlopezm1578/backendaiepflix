@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import bcrypt from 'bcryptjs';
 
 export default class SeedDb{
+    
     static async seedRole(){
         var roleAdmin = await Role.findOne({name:'administrador'}).exec();
         var users = await User.find().exec();
