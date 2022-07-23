@@ -1,6 +1,6 @@
 import { Role } from "../models/role.model";
 import { User } from "../models/user.model";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export default class SeedDb{
     static async seedRole(){

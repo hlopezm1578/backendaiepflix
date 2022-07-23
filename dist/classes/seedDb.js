@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const role_model_1 = require("../models/role.model");
 const user_model_1 = require("../models/user.model");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 class SeedDb {
     static seedRole() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,7 +46,7 @@ class SeedDb {
             var newAdminToSeed = {
                 name: 'Hans López',
                 email: 'hlopez_m@hotmail.com',
-                password: bcrypt_1.default.hashSync('123456', 10),
+                password: bcryptjs_1.default.hashSync('123456', 10),
                 roles: [role._id]
             };
             yield user_model_1.User.create(newAdminToSeed);
