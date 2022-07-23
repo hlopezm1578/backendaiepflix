@@ -26,12 +26,20 @@ server.app.use('/files',filesRoutes);
 
 
 
-mongoose.connect('mongodb://localhost:27017/bdaiepflix',(error)=>{
+mongoose.connect('mongodb+srv://mongouser:Chile.123@cluster0.1f1dd2b.mongodb.net/bdaiepflix',(error)=>{
     if(error){
         throw error;
     }
     console.log('Base de datos online');
-})
+
+});
+
+// mongoose.connect('mongodb://localhost:27017/bdaiepflix',(error)=>{
+//     if(error){
+//         throw error;
+//     }
+//     console.log('Base de datos online');
+// })
 
 
 server.Start( async()=>{

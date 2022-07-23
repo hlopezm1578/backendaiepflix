@@ -35,12 +35,18 @@ server.app.use('/generos', genero_routes_1.default);
 server.app.use('/peliculas', pelicula_routes_1.default);
 server.app.use('/roles', role_routes_1.default);
 server.app.use('/files', file_routes_1.default);
-mongoose_1.default.connect('mongodb://localhost:27017/bdaiepflix', (error) => {
+mongoose_1.default.connect('mongodb+srv://mongouser:Chile.123@cluster0.1f1dd2b.mongodb.net/bdaiepflix', (error) => {
     if (error) {
         throw error;
     }
     console.log('Base de datos online');
 });
+// mongoose.connect('mongodb://localhost:27017/bdaiepflix',(error)=>{
+//     if(error){
+//         throw error;
+//     }
+//     console.log('Base de datos online');
+// })
 server.Start(() => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`Servidor corriendo en puerto:${server.port}`);
     yield seedDb_1.default.seedRole();
