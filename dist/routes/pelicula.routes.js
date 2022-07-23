@@ -13,7 +13,7 @@ const express_1 = require("express");
 const pelicula_model_1 = require("../models/pelicula.model");
 const peliculasRoute = (0, express_1.Router)();
 peliculasRoute.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const peliculas = yield pelicula_model_1.Pelicula.find().exec();
+    const peliculas = yield pelicula_model_1.Pelicula.find().populate('generos');
     res.json({
         ok: true,
         peliculas
@@ -23,8 +23,11 @@ peliculasRoute.post('/', (req, res) => {
     const pelicula = {
         name: req.body.name,
         poster: req.body.poster,
-        year: req.body.year
+        year: req.body.year,
+        generos: req.body.generos
     };
+    const arrGeneros = pelicula.generos.split(",");
+    pelicula.generos = arrGeneros;
     pelicula_model_1.Pelicula.create(pelicula)
         .then(peliculaDb => {
         res.json({

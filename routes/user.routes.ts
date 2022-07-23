@@ -9,17 +9,18 @@ const userRoutes = Router();
 userRoutes.post('/', (req:Request,res:Response)=>{
 
     const user = {
-        nombre: req.body.nombre,
+        name: req.body.name,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password,10)
     };
 
     User.create(user)
-    .then(userDb=>{
+    .then((userDb:any)=>{
         const token = Token.getJwtToken({
             _id:userDb._id,
-            nombre:userDb.nombre,
-            email:userDb.email
+            name:userDb.name,
+            email:userDb.email,
+            role: userDb.roles.length>0 ? userDb.roles[0].name : 'Usuario'
         })
         res.json({
             ok:true,
@@ -53,8 +54,9 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
                 if(userDb.checkPassword(body.password)){
                     const token = Token.getJwtToken({
                         _id:userDb._id,
-                        nombre:userDb.nombre,
-                        email:userDb.email
+                        name:userDb.name,
+                        email:userDb.email,
+                        role: userDb.roles.length>0 ? userDb.roles[0].name : 'Usuario'
                     })
                     res.json({
                         ok:true,
@@ -71,12 +73,12 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
         }
        
 
-    })
+    }).populate('roles')
 });
 
 userRoutes.put('/update',[Authentication],(req:any,res:Response)=>{
     const user = {
-        nombre: req.body.nombre || req.user.nombre,
+        name: req.body.name || req.user.name,
         email: req.body.email || req.user.email
     }
 
@@ -91,7 +93,7 @@ userRoutes.put('/update',[Authentication],(req:any,res:Response)=>{
 
         const token = Token.getJwtToken({
             _id:userDb._id,
-            nombre:userDb.nombre,
+            name:userDb.name,
             email:userDb.email
         })
         res.json({
@@ -100,5 +102,13 @@ userRoutes.put('/update',[Authentication],(req:any,res:Response)=>{
         })
     })
 });
+
+userRoutes.get('/checkadmin',[Authentication],async (req:Request,res:Response)=>{
+    const token = req.get('x-token') || '';
+    var resp = await Token.validateadmin(token);
+    res.json({
+        ok :resp
+    })
+} );
 
 export default userRoutes;

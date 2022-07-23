@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -11,16 +20,17 @@ const auth_1 = require("../middlewares/auth");
 const userRoutes = (0, express_1.Router)();
 userRoutes.post('/', (req, res) => {
     const user = {
-        nombre: req.body.nombre,
+        name: req.body.name,
         email: req.body.email,
         password: bcrypt_1.default.hashSync(req.body.password, 10)
     };
     user_model_1.User.create(user)
-        .then(userDb => {
+        .then((userDb) => {
         const token = token_1.default.getJwtToken({
             _id: userDb._id,
-            nombre: userDb.nombre,
-            email: userDb.email
+            name: userDb.name,
+            email: userDb.email,
+            role: userDb.roles.length > 0 ? userDb.roles[0].name : 'Usuario'
         });
         res.json({
             ok: true,
@@ -54,8 +64,9 @@ userRoutes.post('/login', (req, res) => {
                 if (userDb.checkPassword(body.password)) {
                     const token = token_1.default.getJwtToken({
                         _id: userDb._id,
-                        nombre: userDb.nombre,
-                        email: userDb.email
+                        name: userDb.name,
+                        email: userDb.email,
+                        role: userDb.roles.length > 0 ? userDb.roles[0].name : 'Usuario'
                     });
                     res.json({
                         ok: true,
@@ -70,11 +81,11 @@ userRoutes.post('/login', (req, res) => {
                 }
             }
         }
-    });
+    }).populate('roles');
 });
 userRoutes.put('/update', [auth_1.Authentication], (req, res) => {
     const user = {
-        nombre: req.body.nombre || req.user.nombre,
+        name: req.body.name || req.user.name,
         email: req.body.email || req.user.email
     };
     user_model_1.User.findByIdAndUpdate(req.user._id, user, { new: true }, (err, userDb) => {
@@ -88,7 +99,7 @@ userRoutes.put('/update', [auth_1.Authentication], (req, res) => {
         }
         const token = token_1.default.getJwtToken({
             _id: userDb._id,
-            nombre: userDb.nombre,
+            name: userDb.name,
             email: userDb.email
         });
         res.json({
@@ -97,4 +108,11 @@ userRoutes.put('/update', [auth_1.Authentication], (req, res) => {
         });
     });
 });
+userRoutes.get('/checkadmin', [auth_1.Authentication], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.get('x-token') || '';
+    var resp = yield token_1.default.validateadmin(token);
+    res.json({
+        ok: resp
+    });
+}));
 exports.default = userRoutes;

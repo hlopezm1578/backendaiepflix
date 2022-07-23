@@ -2,7 +2,7 @@ import { Document, model, Schema } from "mongoose";
 import bcrypt from 'bcrypt';
 
 const userSchema = new Schema({
-    nombre:{
+    name:{
         type:String,
         required:[true,'El nombre es requerido']
     },
@@ -14,11 +14,24 @@ const userSchema = new Schema({
     password:{
         type:String,
         required: [true,'El password es requerido']
-    } 
-})
+    },
+    roles:[{
+        type : Schema.Types.ObjectId,
+        ref:'Role'
+    }]
+});
+
+interface IUser extends Document{
+    name:string;
+    email:string;
+    password:string;
+    roles:string[];
+    checkPassword(password:string):boolean;
+
+}
 
 
-userSchema.method('checkPassword', function(password:string=''):boolean{
+userSchema.method<IUser>('checkPassword', function(password:string=''):boolean{
     if(bcrypt.compareSync(password,this.password)){
         return true;
     }else{
@@ -26,13 +39,6 @@ userSchema.method('checkPassword', function(password:string=''):boolean{
     }
 })
 
-interface IUser extends Document{
-    nombre:string;
-    email:string;
-    password:string;
 
-    checkPassword(password:string):boolean;
 
-}
-
-export const User = model<IUser>('Users',userSchema);
+export const User = model<IUser>('User',userSchema);

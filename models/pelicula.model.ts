@@ -13,13 +13,18 @@ const peliculaSchema = new Schema({
     year: {
         type:Number,
         required : [true,'El año es requerido']
-    }
+    },
+    generos :[{
+        type : Schema.Types.ObjectId,
+        ref:'Genero'
+    }]
 });
 
 interface IPelicula extends Document{
     name:string;
     poster:string;
     year:number;
+    generos:[];
 }
 
-export const Pelicula = model<IPelicula>('Peliculas',peliculaSchema);
+export const Pelicula = model<IPelicula>('Pelicula',peliculaSchema);
